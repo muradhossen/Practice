@@ -4,13 +4,13 @@ using System.Text.Json;
 
 namespace Gateway.Middleware
 {
-    public class ResultMiddleware
+    public class ResponseMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<ResultMiddleware> _logger;
+        private readonly ILogger<ResponseMiddleware> _logger;
         private readonly IHostEnvironment _env;
 
-        public ResultMiddleware(RequestDelegate next, ILogger<ResultMiddleware> logger, IHostEnvironment env)
+        public ResponseMiddleware(RequestDelegate next, ILogger<ResponseMiddleware> logger, IHostEnvironment env)
         {
             _next = next;
             _logger = logger;
@@ -21,16 +21,22 @@ namespace Gateway.Middleware
         {
             try
             {
-                // Capture the response body to check the status code later
+                // Capture the original response body
                 var originalResponseBody = context.Response.Body;
-                using var responseBody = new MemoryStream();
+                await using var responseBody = new MemoryStream();
                 context.Response.Body = responseBody;
 
                 await _next(context);
 
                 // Process the response based on the status code
-                context.Response.Body = originalResponseBody;
-                await HandleResponseAsync(context);
+                responseBody.Seek(0, SeekOrigin.Begin);
+                var responseBodyContent = await new StreamReader(responseBody).ReadToEndAsync();
+
+                await HandleResponseAsync(context, responseBodyContent);
+
+                // Copy the modified response to the original response stream
+                responseBody.Seek(0, SeekOrigin.Begin);
+                await responseBody.CopyToAsync(originalResponseBody);
             }
             catch (Exception ex)
             {
@@ -38,7 +44,7 @@ namespace Gateway.Middleware
             }
         }
 
-        private async Task HandleResponseAsync(HttpContext context)
+        private async Task HandleResponseAsync(HttpContext context, string responseBodyContent)
         {
             context.Response.ContentType = "application/json";
 
@@ -69,10 +75,15 @@ namespace Gateway.Middleware
 
                 case (int)HttpStatusCode.OK:
                 case (int)HttpStatusCode.Created:
-                    response = new ResultResponse(true, new Data("I am content"), null);
+                    response = new ResultResponse(true, new Data(responseBodyContent), null);
+                    break;
+
+                case (int)HttpStatusCode.NoContent:
+                    response = new ResultResponse(true, null, null);
                     break;
 
                 default:
+                    // If no custom handling is required, retain the original response
                     // If no custom handling is required, write the response as it is
                     context.Response.Body.Seek(0, SeekOrigin.Begin);
                     await context.Response.Body.CopyToAsync(context.Response.Body);
@@ -81,6 +92,9 @@ namespace Gateway.Middleware
 
             // Serialize and write the response
             var jsonResponse = JsonSerializer.Serialize(response, jsonOptions);
+
+            // Clear the response body before writing new content
+            context.Response.Body.SetLength(0);
             await context.Response.WriteAsync(jsonResponse);
         }
 
@@ -101,6 +115,9 @@ namespace Gateway.Middleware
             };
 
             var jsonResponse = JsonSerializer.Serialize(response, jsonOptions);
+
+            // Clear the response body before writing new content
+            context.Response.Body.SetLength(0);
             await context.Response.WriteAsync(jsonResponse);
         }
     }

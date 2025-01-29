@@ -26,4 +26,6 @@ EXPOSE 5000
 
 COPY --from=build /app/publish .
 
+RUN apt-get update && apt-get install -y curl 
+
 ENTRYPOINT ["dotnet", "Gateway.dll"]
