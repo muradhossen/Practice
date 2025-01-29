@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  authentication:
+    container_name: authentication
+    build:
+      context: .
+      dockerfile: Authentication/Dockerfile
+    networks:
+      - app-network
+    ports:
+      - "5001:8080"
+
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    networks:
+      - app-network
+    ports:
+      - "5000:8080"
+    depends_on:
+      - authentication
+
+
+networks:
+  app-network:
+    driver: bridge

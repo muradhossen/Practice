@@ -1,0 +1,19 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:8080"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/gateway/auth/hello",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/auth/hello",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authentication",
+          "Port": 8080
+        }
+      ]
+    }
+  ]
+}
