@@ -74,8 +74,8 @@ namespace Gateway.Middleware
                     break;
 
                 case (int)HttpStatusCode.OK:
-                case (int)HttpStatusCode.Created:
-                    response = new ResultResponse(true, new Data(responseBodyContent), null);
+                case (int)HttpStatusCode.Created: 
+                    response = new ResultResponse(true, JsonSerializer.Deserialize<object>(responseBodyContent), null);
                     break;
 
                 case (int)HttpStatusCode.NoContent:
@@ -106,8 +106,8 @@ namespace Gateway.Middleware
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var response = _env.IsDevelopment()
-                ? new ResultResponse(false, null, new[] { new Error(ex.Message, ex.StackTrace ?? string.Empty) })
-                : new ResultResponse(false, null, new[] { new Error("Internal Server Error", string.Empty) });
+                ? new ResultResponse(false, null, [new Error(ex.Message, ex.StackTrace ?? string.Empty)])
+                : new ResultResponse(false, null, [new Error("Internal Server Error", string.Empty)]);
 
             var jsonOptions = new JsonSerializerOptions
             {
