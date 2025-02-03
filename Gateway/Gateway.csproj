@@ -14,4 +14,12 @@
     <PackageReference Include="Ocelot" Version="23.4.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Ocelot.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

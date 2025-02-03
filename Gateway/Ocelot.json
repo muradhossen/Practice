@@ -4,9 +4,9 @@
 //  },
 //  "Routes": [
 //    {
-//      "UpstreamPathTemplate": "/gateway/auth/hello",
-//      "UpstreamHttpMethod": [ "Get" ],
-//      "DownstreamPathTemplate": "/auth/hello",
+//      "UpstreamPathTemplate": "/gateway/auth/{everything}",
+//      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+//      "DownstreamPathTemplate": "/auth/{everything}",
 //      "DownstreamScheme": "http",
 //      "DownstreamHostAndPorts": [
 //        {

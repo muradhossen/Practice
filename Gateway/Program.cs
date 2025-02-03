@@ -10,7 +10,16 @@ builder.Services.AddOpenApi();
 
 #region Ocelot configuration
 
-builder.Configuration.AddJsonFile("Ocelot.json", optional: false, reloadOnChange: true);
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile("Ocelot.Development.json", optional: false, reloadOnChange: true);
+}
+else
+{
+    builder.Configuration.AddJsonFile("Ocelot.json", optional: false, reloadOnChange: true);
+}
+
+
 builder.Services.AddOcelot(builder.Configuration);
 
 #endregion
@@ -24,10 +33,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection(); 
+app.UseHttpsRedirection();
 
 await app.UseOcelot();
 
 app.Run();
 
- 

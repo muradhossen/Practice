@@ -35,7 +35,7 @@ app.UseRouting();
 app.MapGet("/auth/hello", () =>
 {
 
-    return "Hello from auth";
+    return Results.Ok("Hello from auth");
 })
 .WithName("GetAutHello");
 
