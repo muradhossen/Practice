@@ -1,6 +1,7 @@
 ﻿using Gateway.Response;
 using System.Net;
 using System.Text.Json;
+using Gateway.Extensions;
 
 namespace Gateway.Middleware
 {
@@ -74,8 +75,9 @@ namespace Gateway.Middleware
                     break;
 
                 case (int)HttpStatusCode.OK:
-                case (int)HttpStatusCode.Created: 
-                    response = new ResultResponse(true, JsonSerializer.Deserialize<object>(responseBodyContent), null);
+                case (int)HttpStatusCode.Created:
+                    responseBodyContent.TryValidateJson(out object result);
+                    response = new ResultResponse(true, result, null);
                     break;
 
                 case (int)HttpStatusCode.NoContent:
@@ -120,5 +122,7 @@ namespace Gateway.Middleware
             context.Response.Body.SetLength(0);
             await context.Response.WriteAsync(jsonResponse);
         }
+
+
     }
 }
