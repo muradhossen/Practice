@@ -1,39 +1,21 @@
-//{
-//  "GlobalConfiguration": {
-//    "BaseUrl": "https://localhost:8080"
-//  },
-//  "Routes": [
-//    {
-//      "UpstreamPathTemplate": "/gateway/auth/{everything}",
-//      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
-//      "DownstreamPathTemplate": "/auth/{everything}",
-//      "DownstreamScheme": "http",
-//      "DownstreamHostAndPorts": [
-//        {
-//          "Host": "authentication",
-//          "Port": 8080
-//        }
-//      ]
-//    }
-//  ]
-//}
-
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5000"
+    "BaseUrl": "https://localhost:8080"
   },
   "Routes": [
     {
       "UpstreamPathTemplate": "/gateway/auth/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "DownstreamPathTemplate": "/auth/{everything}", 
-      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "DownstreamPathTemplate": "/auth/{everything}",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { 
-          "Host": "localhost",
-          "Port": 5001
+        {
+          "Host": "authentication",
+          "Port": 8080
         }
       ]
     }
   ]
 }
+
+ 

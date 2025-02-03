@@ -26,7 +26,8 @@ builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseMiddleware<ResponseMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ResponseMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

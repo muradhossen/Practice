@@ -1,9 +1,10 @@
 ﻿using Authentication.Application.User.Dto;
 using Authentication.Application.User.Extensions;
 using Authentication.Domain;
-using Authentication.Services.Account.Abstract; 
+using Authentication.Services.Account.Abstract;
+using Shared.Results;
 using System.Text;
-using System.Text.Json; 
+using System.Text.Json;
 
 namespace Authentication.Services.Account;
 
@@ -15,8 +16,13 @@ public class AccountService : IAccountService
     {
         _httpClient = httpClient;
     }
-    public async Task<UserDto> LoginAsync(string username, string password)
+    public async Task<Result<UserDto>> LoginAsync(string username, string password)
     {
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            return Result<UserDto>.Failure(["Username and password required"]);
+        }
 
         string endpoint = "https://dummyjson.com/auth/login";
 
@@ -35,15 +41,19 @@ public class AccountService : IAccountService
 
         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-
-       
-        var response = await _httpClient.PostAsync(endpoint,content);
-
+        var response = await _httpClient.PostAsync(endpoint, content);
         string responseJson = await response.Content.ReadAsStringAsync();
 
-        var user = JsonSerializer.Deserialize<User>(responseJson, options);
+        if (response.IsSuccessStatusCode)
+        {
+     
+            var user = JsonSerializer.Deserialize<User>(responseJson, options);
 
-        return user.ToDto();
+            return Result<UserDto>.Success(user.ToDto());
+        }
+
+        var error = new string[] { responseJson };
+        return Result<UserDto>.Failure(error);
 
     }
 }

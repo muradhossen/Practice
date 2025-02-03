@@ -7,12 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "Authentication\Authentication.csproj", "{87443607-83B7-45AC-A6F2-BB99AEF59312}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3803AD4C-45AD-4C77-AD88-E033BD9AA015}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{4771048A-C610-4D63-97E2-17F2F06F77FA}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E1B3DF90-AF80-4CE8-BF20-F828EDA057E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,8 +30,15 @@ Global
 		{87443607-83B7-45AC-A6F2-BB99AEF59312}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87443607-83B7-45AC-A6F2-BB99AEF59312}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87443607-83B7-45AC-A6F2-BB99AEF59312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5BAA64AE-728A-43C3-B5D3-A503EFB2AD11} = {E1B3DF90-AF80-4CE8-BF20-F828EDA057E1}
 	EndGlobalSection
 EndGlobal

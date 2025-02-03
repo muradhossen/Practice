@@ -1,10 +1,11 @@
 ﻿
 using Authentication.Application.User.Dto;
+using Shared.Results;
 
 namespace Authentication.Services.Account.Abstract
 {
     public interface IAccountService
     {
-        Task<UserDto> LoginAsync(string username, string password);
+        Task<Result<UserDto>> LoginAsync(string username, string password);
     }
 }
