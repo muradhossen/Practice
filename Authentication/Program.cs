@@ -2,9 +2,15 @@ using Authentication.Application.User.Dto;
 using Authentication.Services.Account;
 using Authentication.Services.Account.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My Microservice API", Version = "v1" });
+});
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -23,11 +29,16 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My Microservice API v1");
+    });
     app.UseDeveloperExceptionPage();
-}
+//}
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -47,7 +58,7 @@ app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] I
     }
 
     var user = await accountService.LoginAsync(loginDto.Username, loginDto.Password);
-    return Results.Ok(user); 
+    return Results.Ok(user);
 
 });
 

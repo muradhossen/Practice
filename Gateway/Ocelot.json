@@ -4,6 +4,7 @@
   },
   "Routes": [
     {
+      "SwaggerKey": "authapi",
       "UpstreamPathTemplate": "/gateway/auth/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
       "DownstreamPathTemplate": "/auth/{everything}",
@@ -12,6 +13,18 @@
         {
           "Host": "authentication",
           "Port": 8080
+        }
+      ]
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "authapi",
+      "Config": [
+        {
+          "Name": "Authentication Service",
+          "Version": "v1",
+          "Url": "http://authentication:8080/swagger/v1/swagger.json"
         }
       ]
     }

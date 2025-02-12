@@ -6,7 +6,9 @@ COPY ["Authentication/Authentication.csproj", "Authentication/"]
 
 RUN dotnet restore "Authentication/Authentication.csproj"
 
+COPY Shared/ Shared/
 COPY Authentication/ Authentication/
+
 
 WORKDIR "/src/Authentication"
 

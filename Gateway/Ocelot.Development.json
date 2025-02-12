@@ -4,14 +4,27 @@
   },
   "Routes": [
     {
+      "SwaggerKey": "authapi",
       "UpstreamPathTemplate": "/gateway/auth/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
-      "DownstreamPathTemplate": "/auth/{everything}", 
+      "DownstreamPathTemplate": "/auth/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
-        { 
+        {
           "Host": "localhost",
           "Port": 5001
+        }
+      ]
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "authapi",
+      "Config": [
+        {
+          "Name": "Authentication Service",
+          "Version": "v1",
+          "Url": "https://localhost:5001/swagger/v1/swagger.json"
         }
       ]
     }

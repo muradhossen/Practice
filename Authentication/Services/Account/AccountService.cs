@@ -51,9 +51,8 @@ public class AccountService : IAccountService
 
             return Result<UserDto>.Success(user.ToDto());
         }
-
-        var error = new string[] { responseJson };
-        return Result<UserDto>.Failure(error);
+         
+        return Result<UserDto>.Failure([responseJson]);
 
     }
 }
