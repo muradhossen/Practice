@@ -15,6 +15,19 @@
           "Port": 8080
         }
       ]
+    },
+    {
+      "SwaggerKey": "catalogapi",
+      "UpstreamPathTemplate": "/gateway/catalog/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch" ],
+      "DownstreamPathTemplate": "/catalog/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "catalog",
+          "Port": 8080
+        }
+      ]
     }
   ],
   "SwaggerEndPoints": [
@@ -25,6 +38,16 @@
           "Name": "Authentication Service",
           "Version": "v1",
           "Url": "http://authentication:8080/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "catalogapi",
+      "Config": [
+        {
+          "Name": "Catalog Service",
+          "Version": "v1",
+          "Url": "http://catalog:8080/swagger/v1/swagger.json"
         }
       ]
     }

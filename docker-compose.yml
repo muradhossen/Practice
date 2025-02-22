@@ -23,6 +23,15 @@ services:
     depends_on:
       - authentication
 
+  catalog:
+    container_name: catalog
+    build:
+      context: .
+      dockerfile: Catalog/Dockerfile
+    networks:
+      - app-network
+    ports:
+      - "5002:8080" 
 
 networks:
   app-network:

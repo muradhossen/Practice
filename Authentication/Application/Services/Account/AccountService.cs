@@ -1,12 +1,11 @@
-﻿using Authentication.Application.User.Dto;
+﻿using Authentication.Application.Services.Account.Abstract;
+using Authentication.Application.Users.Dtos;
 using Authentication.Application.User.Extensions;
-using Authentication.Domain;
-using Authentication.Services.Account.Abstract;
 using Shared.Results;
 using System.Text;
 using System.Text.Json;
 
-namespace Authentication.Services.Account;
+namespace Authentication.Application.Services.Account;
 
 public class AccountService : IAccountService
 {
@@ -46,13 +45,12 @@ public class AccountService : IAccountService
 
         if (response.IsSuccessStatusCode)
         {
-     
-            var user = JsonSerializer.Deserialize<User>(responseJson, options);
+            var user = JsonSerializer.Deserialize<Domain.User>(responseJson, options);
 
             return Result<UserDto>.Success(user.ToDto());
         }
-         
-        return Result<UserDto>.Failure([responseJson]);
+
+        return (Result<UserDto>)Result.Failure([responseJson]);
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using Authentication.Application.User.Dto;
+﻿using Authentication.Application.Users.Dtos;
 
 namespace Authentication.Application.User.Extensions
 {

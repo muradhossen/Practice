@@ -1,8 +1,9 @@
-using Authentication.Application.User.Dto;
-using Authentication.Services.Account;
-using Authentication.Services.Account.Abstract;
+using Authentication.Application.Services.Account;
+using Authentication.Application.Services.Account.Abstract;
+using Authentication.Application.Users.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Shared.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,7 @@ app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] I
 {
     if (loginDto == null)
     {
-        return Results.BadRequest("Invalid login data.");
+        return Results.BadRequest(Result<UserDto>.Failure(["Invalid username or password"]));
     }
 
     var user = await accountService.LoginAsync(loginDto.Username, loginDto.Password);

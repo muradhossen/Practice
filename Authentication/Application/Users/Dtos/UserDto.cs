@@ -1,4 +1,4 @@
-﻿namespace Authentication.Application.User.Dto
+﻿namespace Authentication.Application.Users.Dtos
 {
     public record UserDto(
         int Id,

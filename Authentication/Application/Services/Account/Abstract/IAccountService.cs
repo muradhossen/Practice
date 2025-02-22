@@ -1,8 +1,7 @@
-﻿
-using Authentication.Application.User.Dto;
+﻿using Authentication.Application.Users.Dtos;
 using Shared.Results;
 
-namespace Authentication.Services.Account.Abstract
+namespace Authentication.Application.Services.Account.Abstract
 {
     public interface IAccountService
     {
