@@ -11,12 +11,14 @@ namespace Catalog.Application.Services.Categories
     public class CategoryService : ICategoryService
     {
         private readonly HttpClient _httpClient;
+        
 
         public CategoryService(HttpClient httpClient)
         {
             this._httpClient = httpClient;
+           
         }
-        public async Task<Result<IEnumerable<CategoryDto>>> GetCategories()
+        public async Task<Result<IEnumerable<CategoryDto>>> GetCategoriesAsync()
         { 
             string endpoint = "https://dummyjson.com/products/categories?delay=5000"; 
 
@@ -29,9 +31,13 @@ namespace Catalog.Application.Services.Categories
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
-                var users = JsonSerializer.Deserialize<IEnumerable<Category>>(responseJson, options);
+                var categories = JsonSerializer.Deserialize<IEnumerable<Category>>(responseJson, options);
 
-                return Result<IEnumerable<CategoryDto>>.Success(users.Select(u => u.ToDto()));
+                var mappedCategories = categories.Select(u => u.ToDto());
+
+               
+
+                return Result<IEnumerable<CategoryDto>>.Success(mappedCategories);
             }
 
             return Result<IEnumerable<CategoryDto>>.Failure([responseJson]);

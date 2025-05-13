@@ -33,6 +33,14 @@ services:
     ports:
       - "5002:8080" 
 
+  redis:
+    image: redis
+    container_name: redis-server
+    networks:
+      - app-network
+    ports:
+      - "6379:6379" 
+
 networks:
   app-network:
     driver: bridge
