@@ -3,7 +3,7 @@ name: Docker .NET CI
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
