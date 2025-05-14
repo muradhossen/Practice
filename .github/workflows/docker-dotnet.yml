@@ -1,0 +1,33 @@
+name: Docker .NET CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Docker Compose
+        run: docker-compose version
+
+      - name: Build containers
+        run: docker-compose build
+
+      - name: Run containers
+        run: docker-compose up -d
+
+      - name: Wait and Test containers are running
+        run: |
+          sleep 10
+          docker ps
+          docker-compose ps
+
+      - name: Shut down containers
+        if: always()
+        run: docker-compose down
