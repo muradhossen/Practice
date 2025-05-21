@@ -25,9 +25,6 @@ jobs:
       - name: Run containers
         run: docker compose up -d
 
-      - name: Tag image
-        run: docker tag your-service-name hossenmurad/practice-hub:latest
-
       - name: Push image to Docker Hub
         run: docker push hossenmurad/practice-hub:latest
 
