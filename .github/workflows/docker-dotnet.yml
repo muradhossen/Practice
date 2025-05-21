@@ -22,9 +22,16 @@ jobs:
       - name: Run containers
         run: docker compose up -d
 
+      - name : Publist to docker-hub
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+         name: hossenmurad/practice-hub
+         username: ${{ secrets.DOCKER_USERNAME }}
+         password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Wait and Test containers are running
         run: |
-          sleep 10
+          sleep 5
           docker ps
           docker compose ps
 
