@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
       - name: Set up Docker Compose
         run: docker compose version
 
@@ -22,12 +25,11 @@ jobs:
       - name: Run containers
         run: docker compose up -d
 
-      - name : Publist to docker-hub
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-         name: hossenmurad/practice-hub
-         username: ${{ secrets.DOCKER_USERNAME }}
-         password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Tag image
+        run: docker tag your-service-name hossenmurad/practice-hub:latest
+
+      - name: Push image to Docker Hub
+        run: docker push hossenmurad/practice-hub:latest
 
       - name: Wait and Test containers are running
         run: |
