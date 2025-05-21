@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: Authentication/Dockerfile
+    image: hossenmurad/authentication
     networks:
       - app-network
     ports:
@@ -16,6 +17,7 @@ services:
     build:
       context: .
       dockerfile: Gateway/Dockerfile
+    image: hossenmurad/gateway
     networks:
       - app-network
     ports:
@@ -28,6 +30,7 @@ services:
     build:
       context: .
       dockerfile: Catalog/Dockerfile
+    image: hossenmurad/catalog
     networks:
       - app-network
     ports:
