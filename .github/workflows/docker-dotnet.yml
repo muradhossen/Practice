@@ -25,8 +25,14 @@ jobs:
       - name: Run containers
         run: docker compose up -d
 
-      - name: Push image to Docker Hub
-        run: docker push hossenmurad/practice-hub
+      - name: Push authentication image
+        run: docker push hossenmurad/authentication
+
+      - name: Push gateway image
+        run: docker push hossenmurad/gateway
+
+      - name: Push catalog image
+        run: docker push hossenmurad/catalog
 
       - name: Wait and Test containers are running
         run: |
