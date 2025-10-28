@@ -43,7 +43,7 @@ app.MapGet("/catalog/categories", async ([FromServices] ICategoryCachingService 
     }
     catch (Exception ex)
     {
-        return Result.Failure(new[] { ex.Message });
+        return Result.Failure([ex.Message]);
     }
 })
 .WithName("GetCategories")
