@@ -2,8 +2,10 @@ using Authentication.Application.Services.Account;
 using Authentication.Application.Services.Account.Abstract;
 using Authentication.Application.Users.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Shared.Results;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,38 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 });
 
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests; 
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            IsSuccess = false,
+            Errors = "Rate limit exceeded. Try again later.",
+        }, token);
+    };
+
+    // Sliding window limiter
+    options.AddPolicy("IpSlidingPolicy", context =>
+    {
+        var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+                 ?? context.Connection.RemoteIpAddress?.ToString()
+                 ?? "unknown";
+
+        return RateLimitPartition.GetSlidingWindowLimiter(
+            ip,
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6,
+                QueueLimit = 0
+            });
+    });
+});
+
 var app = builder.Build();
 
 
@@ -43,6 +77,8 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseRateLimiter();
 
 app.MapGet("/auth/hello", () =>
 {
@@ -61,7 +97,7 @@ app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] I
     var user = await accountService.LoginAsync(loginDto.Username, loginDto.Password);
     return Results.Ok(user);
 
-});
+}).RequireRateLimiting("IpSlidingPolicy");
 
 app.MapPost("/", async (HttpRequest request) =>
 {
@@ -77,8 +113,7 @@ app.MapPost("/", async (HttpRequest request) =>
 
         throw;
     }
-});
-
+}); 
 
 app.Run();
 
