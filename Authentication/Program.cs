@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My Microservice API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Authentication API", Version = "v1" });
 });
 builder.Services.AddOpenApi();
 
@@ -119,7 +119,7 @@ app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] I
     var user = await accountService.LoginAsync(loginDto.Username, loginDto.Password);
     return Results.Ok(user);
 
-}).RequireRateLimiting("IpSlidingPolicy");
+}).RequireRateLimiting("IpLoginLimitPolicy");
 
 app.MapPost("/", async (HttpRequest request) =>
 {

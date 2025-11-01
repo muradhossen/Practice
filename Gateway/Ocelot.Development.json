@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5000"
+    "BaseUrl": "https://localhost:7000"
   },
   "Routes": [
     {
@@ -12,7 +12,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5001
+          "Port": 7001
         }
       ]
     },
@@ -25,7 +25,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5002
+          "Port": 7002
         }
       ]
     }
@@ -37,7 +37,7 @@
         {
           "Name": "Authentication Service",
           "Version": "v1",
-          "Url": "https://localhost:5001/swagger/v1/swagger.json"
+          "Url": "https://localhost:7001/swagger/v1/swagger.json"
         }
       ]
     },
@@ -47,7 +47,7 @@
         {
           "Name": "Catalog Service",
           "Version": "v1",
-          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+          "Url": "https://localhost:7002/swagger/v1/swagger.json"
         }
       ]
     }

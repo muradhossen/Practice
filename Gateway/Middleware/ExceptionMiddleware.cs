@@ -47,8 +47,11 @@ namespace Gateway.Middleware
 
             var jsonResponse = JsonSerializer.Serialize(response, jsonOptions);
 
-            // Clear the response body before writing new content
-            context.Response.Body.SetLength(0);
+            // Safely reset the response body if possible
+            if (context.Response.Body.CanSeek)
+            {
+                context.Response.Body.Seek(0, SeekOrigin.Begin);
+            }
             await context.Response.WriteAsync(jsonResponse);
         }
 
