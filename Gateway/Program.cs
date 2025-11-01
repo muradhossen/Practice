@@ -5,7 +5,7 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(); 
+builder.Services.AddOpenApi();
 
 #region Ocelot configuration
 
@@ -30,6 +30,14 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 //app.UseMiddleware<ResponseMiddleware>();
+
+app.Use(async (context, next) =>
+{
+    var instanceName = Environment.GetEnvironmentVariable("INSTANCE_NAME");
+    Console.WriteLine(instanceName);
+
+    await next.Invoke();
+});
 
 //if (app.Environment.IsDevelopment())
 //{

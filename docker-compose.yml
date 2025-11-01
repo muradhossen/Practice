@@ -14,6 +14,8 @@ services:
 
   gateway:
     container_name: gateway
+    environment:
+      - INSTANCE_NAME=gateway1
     build:
       context: .
       dockerfile: Gateway/Dockerfile
@@ -24,6 +26,21 @@ services:
       - "5000:8080"
     depends_on:
       - authentication
+
+  gateway2:
+    container_name: gateway2
+    environment:
+      - INSTANCE_NAME=gateway2
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    image: hossenmurad/gateway
+    networks:
+      - app-network
+    ports:
+      - "5003:8080"
+    depends_on:
+      - authentication 
 
   catalog:
     container_name: catalog
@@ -43,6 +60,20 @@ services:
       - app-network
     ports:
       - "6379:6379" 
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-loadbalancer
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - gateway
+      - gateway2
+    networks:
+      - app-network
+
 
 networks:
   app-network:

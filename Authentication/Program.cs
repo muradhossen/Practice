@@ -103,11 +103,12 @@ app.UseRateLimiter();
 
 app.MapGet("/auth/hello", () =>
 {
+    var instance = Environment.GetEnvironmentVariable("INSTANCE_NAME") ?? "Unknown";
 
-    return Results.Ok("Hello from auth");
+    return Results.Ok($"Hello from auth : {instance}");
 })
-.WithName("GetAutHello")
-.RequireRateLimiting("IpLoginLimitPolicy");
+.WithName("GetAutHello");
+//.RequireRateLimiting("IpLoginLimitPolicy");
 
 app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] IAccountService accountService) =>
 {
