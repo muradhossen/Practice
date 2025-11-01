@@ -31,32 +31,53 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddRateLimiter(options =>
 {
+    // Configure the rejection response for ALL rate-limited requests
     options.OnRejected = async (context, token) =>
     {
-        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests; 
+        // Get the time until the limit resets (the countdown)
+        var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var value)
+            ? (TimeSpan?)value
+            : null;
 
-        await context.HttpContext.Response.WriteAsJsonAsync(new
+
+
+        // Check if RetryAfter has a value
+        if (retryAfter.HasValue)
         {
-            IsSuccess = false,
-            Errors = "Rate limit exceeded. Try again later.",
-        }, token);
+            var seconds = (int)retryAfter.Value.TotalSeconds;
+
+            // Set the response status code and content
+            context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            context.HttpContext.Response.ContentType = "text/plain";
+            await context.HttpContext.Response.WriteAsync(
+                $"API limit exceed, try after {seconds} second{(seconds != 1 ? "s" : "")}.",
+                cancellationToken: token);
+        }
+        else
+        {
+            context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            context.HttpContext.Response.ContentType = "text/plain";
+            await context.HttpContext.Response.WriteAsync(
+                "API limit exceed. Please try again later.",
+                cancellationToken: token);
+        }
     };
 
-    // Sliding window limiter
-    options.AddPolicy("IpSlidingPolicy", context =>
+    // 2. Define the IP-Based, Fixed Window Policy
+    options.AddPolicy("IpLoginLimitPolicy", httpContext =>
     {
-        var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
-                 ?? context.Connection.RemoteIpAddress?.ToString()
-                 ?? "unknown";
+        // Get the IP address for partitioning
+        var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
-        return RateLimitPartition.GetSlidingWindowLimiter(
-            ip,
-            _ => new SlidingWindowRateLimiterOptions
+        // Create a Fixed Window Limiter for this IP
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ipAddress, // The partition key is the IP
+            factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 5,
-                Window = TimeSpan.FromMinutes(1),
-                SegmentsPerWindow = 6,
-                QueueLimit = 0
+                PermitLimit = 10, // Max 10 requests
+                Window = TimeSpan.FromMinutes(1), // within 1 minute
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0 // No queueing, reject immediately
             });
     });
 });
@@ -85,7 +106,8 @@ app.MapGet("/auth/hello", () =>
 
     return Results.Ok("Hello from auth");
 })
-.WithName("GetAutHello");
+.WithName("GetAutHello")
+.RequireRateLimiting("IpLoginLimitPolicy");
 
 app.MapPost("/auth/login", async ([FromBody] LoginDto loginDto, [FromServices] IAccountService accountService) =>
 {
