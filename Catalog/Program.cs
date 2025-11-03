@@ -49,6 +49,15 @@ app.MapGet("/catalog/categories", async ([FromServices] ICategoryCachingService 
 .WithName("GetCategories")
 .WithOpenApi();
 
+app.MapGet("/catalog/test", async ([FromServices] ICategoryCachingService categoryService) =>
+{
+    string environment = Environment.GetEnvironmentVariable("INSTANCE_NAME");
+
+     return Results.Ok($"Catalog Service {environment} is up and running");
+})
+.WithName("TestCatalog")
+.WithOpenApi();
+
 app.MapGet("/catalog/test-redis", async ([FromServices] ICategoryService categoryService) =>
 {
     try

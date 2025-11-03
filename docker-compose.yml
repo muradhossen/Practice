@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    image: hossenmurad/gateway
+    networks:
+      - app-network
+    ports:
+      - "5000:8080"
+    depends_on:
+      - authentication 
+
   authentication:
     container_name: authentication
     build:
@@ -12,38 +26,10 @@ services:
     ports:
       - "5001:8080"
 
-  gateway:
-    container_name: gateway
-    environment:
-      - INSTANCE_NAME=gateway1
-    build:
-      context: .
-      dockerfile: Gateway/Dockerfile
-    image: hossenmurad/gateway
-    networks:
-      - app-network
-    ports:
-      - "5000:8080"
-    depends_on:
-      - authentication
-
-  gateway2:
-    container_name: gateway2
-    environment:
-      - INSTANCE_NAME=gateway2
-    build:
-      context: .
-      dockerfile: Gateway/Dockerfile
-    image: hossenmurad/gateway
-    networks:
-      - app-network
-    ports:
-      - "5003:8080"
-    depends_on:
-      - authentication 
-
   catalog:
     container_name: catalog
+    environment:
+      - INSTANCE_NAME=catalog_1
     build:
       context: .
       dockerfile: Catalog/Dockerfile
@@ -52,6 +38,20 @@ services:
       - app-network
     ports:
       - "5002:8080" 
+
+  catalog_2:
+    container_name: catalog_2
+    environment:
+      - INSTANCE_NAME=catalog_2
+    build:
+      context: .
+      dockerfile: Catalog/Dockerfile
+    image: hossenmurad/catalog
+    networks:
+      - app-network
+    ports:
+      - "5003:8080" 
+
 
   redis:
     image: redis
@@ -69,8 +69,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - gateway
-      - gateway2
+      - catalog
+      - catalog_2
     networks:
       - app-network
 

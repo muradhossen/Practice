@@ -24,8 +24,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "catalog",
-          "Port": 8080
+          "Host": "nginx-loadbalancer",
+          "Port": 80
         }
       ]
     }
