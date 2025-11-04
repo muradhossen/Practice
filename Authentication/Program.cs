@@ -82,6 +82,11 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+// Configure built-in logger
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // Promtail reads these from Docker stdout
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 var app = builder.Build();
 
 
@@ -101,11 +106,11 @@ app.UseRouting();
 
 app.UseRateLimiter();
 
-app.MapGet("/auth/hello", () =>
+app.MapGet("/auth/hello", (ILogger<Program> logger) =>
 {
-    var instance = Environment.GetEnvironmentVariable("INSTANCE_NAME") ?? "Unknown";
-
-    return Results.Ok($"Hello from auth : {instance}");
+   
+    logger.LogInformation("Hello endpoint called.");
+    return Results.Ok($"Hello from auth.");
 })
 .WithName("GetAutHello");
 //.RequireRateLimiting("IpLoginLimitPolicy");

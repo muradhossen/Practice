@@ -23,6 +23,7 @@ services:
     image: hossenmurad/authentication
     networks:
       - app-network
+      - logging
     ports:
       - "5001:8080"
 
@@ -36,6 +37,7 @@ services:
     image: hossenmurad/catalog
     networks:
       - app-network
+      - logging
     ports:
       - "5002:8080" 
 
@@ -49,6 +51,7 @@ services:
     image: hossenmurad/catalog
     networks:
       - app-network
+      - logging
     ports:
       - "5003:8080" 
 
@@ -78,3 +81,5 @@ services:
 networks:
   app-network:
     driver: bridge
+  logging:
+    external: true 

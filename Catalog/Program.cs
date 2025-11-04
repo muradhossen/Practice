@@ -25,6 +25,11 @@ var redis = ConnectionMultiplexer.Connect(redisConnection);
 builder.Services.AddSingleton(redis);
 #endregion
 
+// Configure built-in logger
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); // Promtail reads these from Docker stdout
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
@@ -49,11 +54,12 @@ app.MapGet("/catalog/categories", async ([FromServices] ICategoryCachingService 
 .WithName("GetCategories")
 .WithOpenApi();
 
-app.MapGet("/catalog/test", async ([FromServices] ICategoryCachingService categoryService) =>
+app.MapGet("/catalog/test", async ([FromServices] ICategoryCachingService categoryService, ILogger<Program> logger) =>
 {
     string environment = Environment.GetEnvironmentVariable("INSTANCE_NAME");
 
-     return Results.Ok($"Catalog Service {environment} is up and running");
+    logger.LogInformation("Catalog Service test endpoint called on instance: {Instance}", environment);
+    return Results.Ok($"Catalog Service {environment} is up and running");
 })
 .WithName("TestCatalog")
 .WithOpenApi();
